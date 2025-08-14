@@ -67,3 +67,4 @@ venv/
 
 examples/out.png
 examples/*.perf
+**/.DS_Store

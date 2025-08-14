@@ -43,6 +43,7 @@ class SimpleHeap:
            again.
         2. We use this approach to avoid invalidating the heap structure.
         """
+        # EVOLVE-BLOCK-START id="heap-optimization"
         node_tuple = heapq.heappop(self.open_list)
         while node_tuple in self.removed_node_tuples:
             node_tuple = heapq.heappop(self.open_list)
@@ -56,6 +57,7 @@ class SimpleHeap:
                 node_tuple[4]].node(node_tuple[2], node_tuple[3])
 
         return node
+        # EVOLVE-BLOCK-END
 
     def push_node(self, node):
         """
@@ -63,6 +65,7 @@ class SimpleHeap:
 
         :param node: The node to push.
         """
+        # EVOLVE-BLOCK-START id="heap-optimization"
         self.number_pushed = self.number_pushed + 1
         node_tuple = self._get_node_tuple(node, self.number_pushed)
         node_id = self._get_node_id(node)
@@ -70,6 +73,7 @@ class SimpleHeap:
         self.heap_order[node_id] = self.number_pushed
 
         heapq.heappush(self.open_list, node_tuple)
+        # EVOLVE-BLOCK-END
 
     def remove_node(self, node, f):
         """
@@ -81,10 +85,12 @@ class SimpleHeap:
         :param node: The node to remove.
         :param f: The old f value of the node.
         """
+        # EVOLVE-BLOCK-START id="heap-optimization"
         node_id = self._get_node_id(node)
         heap_order = self.heap_order[node_id]
         node_tuple = self._get_node_tuple(node, heap_order)
         self.removed_node_tuples.add(node_tuple)
+        # EVOLVE-BLOCK-END
 
     def __len__(self):
         """Returns the length of the open_list."""

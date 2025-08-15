@@ -131,21 +131,17 @@ class Finder:
         ng = parent.g + graph.calc_cost(parent, node, self.weighted)
 
         if not node.opened or ng < node.g:
-            old_f = node.f
             node.g = ng
             node.h = node.h or self.apply_heuristic(node, end, graph=graph)
             # f is the estimated total cost from start to goal
             node.f = node.g + node.h
             node.parent = parent
-            if not node.opened:
-                open_list.push_node(node)
-                node.opened = open_value
-            else:
-                # the node can be reached with smaller cost.
-                # Since its f value has been updated, we have to
-                # update its position in the open list
-                open_list.remove_node(node, old_f)
-                open_list.push_node(node)
+            # EVOLVE-BLOCK-START id="heap-optimization"
+            # it's not opened or we found a cheaper path
+            # so we add it to the open list
+            open_list.push_node(node)
+            node.opened = open_value
+            # EVOLVE-BLOCK-END
 
     def check_neighbors(self, start, end, graph, open_list,
                         open_value=True, backtrace_by=None):

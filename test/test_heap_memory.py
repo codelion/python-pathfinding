@@ -114,13 +114,12 @@ def test_aggressive_memory_leak():
     Aggressive test that runs pathfinding until memory exhaustion.
     Uses realistic data sizes but high volume to trigger crash.
     """
-    print("MEMORY LEAK CRASH TEST")
-    print("=" * 30)
+    print("MEMORY LEAK TEST")
+    print("=" * 20)
     
     # Create large maze for memory leak (optimized for speed)
-    size = 3000  # 3000x3000 = 9 MILLION nodes - faster creation
+    size = 2500  # 2500x2500 = 6.25 MILLION nodes - faster creation
     print(f"Creating {size}x{size} maze ({size*size:,} nodes)")
-    print("WARNING: This will cause massive memory leakage!")
     
     # Use simple open grid for fastest creation - pathfinding will still leak massively
     matrix = np.ones((size, size), dtype=bool)  # All walkable - fastest possible
@@ -189,9 +188,9 @@ def test_aggressive_memory_leak():
                 
                 print()
             
-            # Stop at 4GB memory increase to allow comparison with fixed version
-            if memory_increase > 4096:  # 4GB limit
-                print(f"\n4GB memory limit reached after {iteration} iterations")
+            # Stop at 2GB memory increase to allow comparison with fixed version
+            if memory_increase > 2048:  # 2GB limit
+                print(f"\n2GB memory limit reached after {iteration} iterations")
                 print(f"Memory increased by {memory_increase:.1f}MB")
                 print("With fix: should run many more iterations without hitting this limit")
                 break

@@ -52,6 +52,7 @@ class AStarFinder(Finder):
         :param grid: grid that stores all possible steps/tiles as 2D-list
         :param open_list: stores nodes that will be processed next
         """
+        # EVOLVE-BLOCK-START id="heap-optimization"
         # pop node with minimum 'f' value
         node = open_list.pop_node()
         node.closed = True
@@ -79,6 +80,7 @@ class AStarFinder(Finder):
             # can be reached with smaller cost from the current node
             self.process_node(
                 graph, neighbor, node, end, open_list, open_value)
+        # EVOLVE-BLOCK-END
 
         # the end has not been reached (yet) keep the find_path loop running
         return None

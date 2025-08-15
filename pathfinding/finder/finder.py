@@ -137,6 +137,7 @@ class Finder:
             # f is the estimated total cost from start to goal
             node.f = node.g + node.h
             node.parent = parent
+            # EVOLVE-BLOCK-START id="heap-optimization"
             if not node.opened:
                 open_list.push_node(node)
                 node.opened = open_value
@@ -146,6 +147,7 @@ class Finder:
                 # update its position in the open list
                 open_list.remove_node(node, old_f)
                 open_list.push_node(node)
+            # EVOLVE-BLOCK-END
 
     def check_neighbors(self, start, end, graph, open_list,
                         open_value=True, backtrace_by=None):

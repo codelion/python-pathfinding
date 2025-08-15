@@ -55,6 +55,11 @@ class AStarFinder(Finder):
         # EVOLVE-BLOCK-START id="heap-optimization"
         # pop node with minimum 'f' value
         node = open_list.pop_node()
+
+        # open list is exhausted
+        if not node:
+            return None
+
         node.closed = True
 
         # if reached the end position, construct the path and return it
@@ -67,7 +72,6 @@ class AStarFinder(Finder):
         neighbors = self.find_neighbors(graph, node)
         for neighbor in neighbors:
             if neighbor.closed:
-                # already visited last minimum f value
                 continue
             if backtrace_by and neighbor.opened == backtrace_by:
                 # found the oncoming path

@@ -161,18 +161,11 @@ def test_aggressive_memory_leak():
             heap, path_len, runs = run_aggressive_pathfinding(grid, start_node, end_node)
             
             if heap:
-                # Check if this is the old leaky implementation or the evolved fixed one
-                if hasattr(heap, 'removed_node_tuples') and hasattr(heap, 'heap_order'):
-                    # Old leaky implementation
-                    leaked_this_op = len(heap.removed_node_tuples) + len(heap.heap_order)
-                    total_leaked_entries += leaked_this_op
-                    # Keep the heap alive to accumulate leaked memory!
-                    leaked_heaps.append(heap)
-                else:
-                    # Evolved implementation - no memory leak!
-                    leaked_this_op = 0
-                    total_leaked_entries += leaked_this_op
-                    # Don't need to keep heap references in fixed version
+                leaked_this_op = len(heap.removed_node_tuples) + len(heap.heap_order)
+                total_leaked_entries += leaked_this_op
+                
+                # Keep the heap alive to accumulate leaked memory!
+                leaked_heaps.append(heap)
             
             total_pathfinding_ops += 1
             
@@ -183,18 +176,12 @@ def test_aggressive_memory_leak():
                 elapsed_time = current_time - start_time
                 memory_increase = current_memory - start_memory
                 
-                # Detect which implementation we're running
-                implementation_type = "FIXED" if total_leaked_entries == 0 else "LEAKY"
-                
-                print(f"Iteration {iteration} ({total_pathfinding_ops:,} operations) - {implementation_type}")
+                print(f"Iteration {iteration} ({total_pathfinding_ops:,} operations)")
                 print(f"  Time: {elapsed_time:.1f}s")
                 print(f"  Memory: {current_memory:.1f}MB (+{memory_increase:.1f}MB)")
                 print(f"  Leaked entries: {total_leaked_entries:,}")
                 print(f"  Heap objects kept: {len(leaked_heaps):,}")
-                if total_pathfinding_ops > 0:
-                    print(f"  Avg leak/op: {total_leaked_entries/total_pathfinding_ops:.1f}")
-                else:
-                    print(f"  Avg leak/op: 0.0")
+                print(f"  Avg leak/op: {total_leaked_entries/total_pathfinding_ops:.1f}")
                 
                 # Force garbage collection
                 gc.collect()
@@ -203,14 +190,9 @@ def test_aggressive_memory_leak():
             
             # Stop at 2GB memory increase to allow comparison with fixed version
             if memory_increase > 2048:  # 2GB limit
-                implementation_type = "FIXED" if total_leaked_entries == 0 else "LEAKY"
                 print(f"\n2GB memory limit reached after {iteration} iterations")
-                print(f"Implementation: {implementation_type}")
                 print(f"Memory increased by {memory_increase:.1f}MB")
-                if total_leaked_entries == 0:
-                    print("✅ MEMORY LEAK FIXED! Reached 2GB due to normal processing, not leak")
-                else:
-                    print("🚨 MEMORY LEAK DETECTED! Reached 2GB due to leaked entries")
+                print("With fix: should run many more iterations without hitting this limit")
                 break
                 
     except MemoryError:
